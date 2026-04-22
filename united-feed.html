@@ -2,81 +2,48 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>ระบบเช็กข้อมูลดิบ - PN AGRO TRADE</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; background: #f0f2f5; }
-        .box { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .status { padding: 10px; margin-bottom: 20px; font-weight: bold; border-radius: 5px; text-align: center; }
-        .ok { background: #dcfce7; color: #166534; }
-        .err { background: #fee2e2; color: #991b1b; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background: #fdf2f8; color: #db2777; }
-        .price { color: #be185d; font-weight: bold; font-size: 1.2rem; }
-    </style>
+    <title>ระบบตรวจสอบราคา PN AGRO</title>
 </head>
-<body>
+<body style="font-family: sans-serif; padding: 20px;">
+    <h2>สถานะการเชื่อมต่อ: <span id="status" style="color: gray;">กำลังโหลด...</span></h2>
+    <div id="result"></div>
 
-<div class="box">
-    <h2 style="color: #db2777; border-bottom: 2px solid #db2777; padding-bottom: 10px;">PN AGRO ข้อมูลจาก Google Sheets (Column E)</h2>
-    
-    <div id="status" class="status">⏳ กำลังเชื่อมต่อข้อมูล...</div>
+    <script>
+        // ลิงก์ CSV ของคุณฉัตร
+        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOz2mDLKhBRGJGmT17zqLsuPBJIr3sLZEAUaXPQRdBxhgw1RXJ5KOwGQONh9YccgDx8GkDnBm9WusP/pub?output=csv';
 
-    <table id="test-table" style="display:none;">
-        <thead>
-            <tr>
-                <th>แถวที่</th>
-                <th>Column A (รหัสสินค้า)</th>
-                <th>Column E (ราคาที่คุณต้องการ)</th>
-            </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-    </table>
-</div>
-
-<script>
-    // ลิงก์ CSV จากที่คุณฉัตร Publish ไว้
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOz2mDLKhBRGJGmT17zqLsuPBJIr3sLZEAUaXPQRdBxhgw1RXJ5KOwGQONh9YccgDx8GkDnBm9WusP/pub?output=csv';
-
-    async function checkData() {
-        const status = document.getElementById('status');
-        const table = document.getElementById('test-table');
-        const tbody = document.getElementById('rows');
-
-        try {
-            // เพิ่ม Timestamp กันเบราว์เซอร์จำค่าเก่า
-            const response = await fetch(url + '&t=' + new Date().getTime());
-            if (!response.ok) throw new Error('เชื่อมต่อล้มเหลว');
-
-            const text = await response.text();
-            // แยกข้อมูล CSV (ดึงมาดื้อๆ เลย)
-            const rows = text.split('\n').map(row => row.split(',').map(cell => cell.trim().replace(/^"|"$/g, '')));
-
-            let html = "";
-            // แสดงผลตั้งแต่แถวที่ 2 เป็นต้นไป (ข้ามหัวตาราง)
-            rows.slice(1).forEach((cols, index) => {
-                if (cols[0]) { // ถ้าคอลัมน์ A ไม่ว่าง
-                    html += `<tr>
-                        <td>${index + 2}</td>
-                        <td>${cols[0]}</td>
-                        <td class="price">${cols[4] || '0'}</td>
-                    </tr>`;
-                }
-            });
-
-            tbody.innerHTML = html;
-            table.style.display = "table";
-            status.innerText = "✅ ดึงข้อมูลสำเร็จ! ตรวจสอบราคาในตารางด้านล่าง";
-            status.className = "status ok";
-
-        } catch (err) {
-            status.innerText = "❌ ผิดพลาด: " + err.message;
-            status.className = "status err";
+        async function load() {
+            const status = document.getElementById('status');
+            const result = document.getElementById('result');
+            try {
+                // เพิ่มโหมด cors เพื่อขออนุญาตดึงข้อมูลตรงๆ
+                const response = await fetch(url, { mode: 'cors' });
+                if (!response.ok) throw new Error('Google Sheets ปฏิเสธการเข้าถึง');
+                
+                const text = await response.text();
+                const lines = text.split('\n');
+                
+                let table = '<table border="1" style="width:100%; border-collapse:collapse;">';
+                table += '<tr style="background:#eee;"><th>รหัส (Col A)</th><th>ราคา (Col E)</th></tr>';
+                
+                lines.forEach((line, i) => {
+                    if(i > 0 && line.trim() !== "") {
+                        const cols = line.split(',');
+                        table += `<tr><td>${cols[0]}</td><td><b>${cols[4] || '0'}</b></td></tr>`;
+                    }
+                });
+                table += '</table>';
+                
+                result.innerHTML = table;
+                status.innerText = "เชื่อมต่อสำเร็จ ✅";
+                status.style.color = "green";
+            } catch (err) {
+                status.innerText = "เชื่อมต่อไม่ได้ ❌ (สาเหตุ: " + err.message + ")";
+                status.style.color = "red";
+                result.innerHTML = "<p>แนะนำ: ลองเปิดผ่าน 'มือถือ' หรืออัปโหลดไฟล์ขึ้นเว็บจริงครับ</p>";
+            }
         }
-    }
-
-    checkData();
-</script>
-
+        load();
+    </script>
 </body>
 </html>
