@@ -6,57 +6,146 @@
     <title>โปรแกรมการกินอาหารสุกร - PN AGRO TRADE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; background-color: #fff5f7; margin: 0; padding: 0; }
+        .gradient-header { background: linear-gradient(135deg, #9d174d 0%, #db2777 100%); }
+        .product-card { border-bottom: 1px solid #fce7f3; min-height: 160px; page-break-inside: avoid; }
+        .img-box { width: 110px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .img-box img { max-width: 100%; max-height: 100px; object-fit: contain; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.15)); }
+        .huge-number { font-size: 1.6rem; line-height: 1; font-weight: 700; color: #1f2937; }
+        .huge-number-pink { font-size: 1.6rem; line-height: 1; font-weight: 700; color: #be185d; }
+        @media print {
+            .no-print { display: none !important; }
+            .a4-container { width: 100% !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+        .a4-container { width: 210mm; min-height: 297mm; margin: 10px auto; background: white; display: flex; flex-direction: column; }
+    </style>
 </head>
-<body class="bg-pink-50 p-4">
-    <div class="max-w-[210mm] mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden p-8">
-        <h1 class="text-3xl font-bold text-pink-600 border-b-4 border-pink-600 pb-2 mb-6 text-center">PN AGRO TRADE - อัปเดตราคาล่าสุด</h1>
-        
-        <div id="loading-status" class="text-center py-10 text-xl font-bold text-gray-400">⏳ กำลังดึงราคาล่าสุดจากระบบ...</div>
-        
-        <div id="price-table" class="hidden">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-pink-600 text-white">
-                        <th class="p-4 rounded-tl-xl">สูตรอาหาร</th>
-                        <th class="p-4 text-right rounded-tr-xl">ราคาต่อถุง (Col E)</th>
-                    </tr>
-                </thead>
-                <tbody id="data-rows" class="text-lg"></tbody>
-            </table>
-            <p class="mt-8 text-center text-gray-400 italic text-sm">ข้อมูลอัปเดตสดจาก Google Sheets ของคุณฉัตร</p>
+<body>
+
+    <div class="max-w-[210mm] mx-auto mb-2 p-3 bg-white shadow no-print flex justify-between items-center border-b-2 border-pink-500">
+        <div id="status-display" class="text-xs font-bold text-green-600 font-bold">📡 กำลังเชื่อมต่อข้อมูล...</div>
+        <button onclick="fetchPrices()" class="bg-pink-600 text-white px-4 py-1 rounded-full text-xs font-bold shadow-md hover:bg-pink-700">🔄 รีเฟรชราคา</button>
+    </div>
+
+    <div class="a4-container shadow-2xl rounded-[1.5rem] overflow-hidden">
+        <div class="gradient-header p-4 text-white text-center">
+            <h1 class="text-2xl md:text-3xl font-bold">โปรแกรมการกินอาหารสุกร ยูไนเต็ด</h1>
+            <p class="text-pink-100 text-sm font-light">(สูตร 1) - คุณภาพเพื่อกำไร โดย หจก. พีเอ็น อะโกร เทรด</p>
+        </div>
+
+        <div class="px-8 py-2 flex-grow flex flex-col gap-y-1">
+            
+            <div class="product-card flex flex-row gap-6 py-4 items-center" data-match="S80S" data-use="0.5">
+                <div class="img-box"><img src="S80S.png" alt="S80S"></div>
+                <div class="flex-grow">
+                    <div class="flex justify-between items-baseline">
+                        <h2 class="text-xl font-bold text-pink-800 leading-tight">ยูไนเต็ด S80S</h2>
+                        <span class="bg-pink-700 text-white text-[12px] px-3 py-0.5 rounded-full font-bold uppercase">หมูเลียราง</span>
+                    </div>
+                    <p class="text-gray-500 text-xs mt-1 italic">ระยะแรกเกิด - 15 กก.</p>
+                    <div class="grid grid-cols-3 gap-2 text-center mt-3">
+                        <div class="bg-gray-50 p-2 rounded-xl border border-gray-100"><p class="text-[10px] text-gray-400 font-bold">จำนวน 0.5 ถุง</p></div>
+                        <div class="bg-gray-50 p-2 rounded-xl border border-gray-100"><p class="huge-number price-val">0</p></div>
+                        <div class="bg-pink-50 p-2 rounded-xl border border-pink-100 text-pink-700"><p class="huge-number-pink net-val">0</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card flex flex-row gap-6 py-4 items-center" data-match="S20T" data-use="0.5">
+                <div class="img-box"><img src="S20T.png" alt="S20T"></div>
+                <div class="flex-grow">
+                    <div class="flex justify-between items-baseline">
+                        <h2 class="text-xl font-bold text-pink-800 leading-tight">ยูไนเต็ด S20T</h2>
+                        <span class="bg-pink-700 text-white text-[12px] px-3 py-0.5 rounded-full font-bold uppercase">หมูอนุบาล</span>
+                    </div>
+                    <p class="text-gray-500 text-xs mt-1 italic">ระยะหย่านม - 30 กก.</p>
+                    <div class="grid grid-cols-3 gap-2 text-center mt-3">
+                        <div class="bg-gray-50 p-2 rounded-xl border border-gray-100"><p class="text-[10px] text-gray-400 font-bold">จำนวน 0.5 ถุง</p></div>
+                        <div class="bg-gray-50 p-2 rounded-xl border border-gray-100"><p class="huge-number price-val">0</p></div>
+                        <div class="bg-pink-50 p-2 rounded-xl border border-pink-100 text-pink-700"><p class="huge-number-pink net-val">0</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card flex flex-row gap-6 py-4 items-center" data-match="S21" data-use="2">
+                <div class="img-box"><img src="S21.png" alt="S21"></div>
+                <div class="flex-grow">
+                    <div class="flex justify-between items-baseline">
+                        <h2 class="text-xl font-bold text-pink-800 leading-tight">ยูไนเต็ด S21</h2>
+                        <span class="bg-pink-700 text-white text-[12px] px-3 py-0.5 rounded-full font-bold uppercase">หมูเล็ก</span>
+                    </div>
+                    <p class="text-gray-500 text-xs mt-1 italic">ระยะน้ำหนัก 15 - 30 กก.</p>
+                    <div class="grid grid-cols-3 gap-2 text-center mt-3">
+                        <div class="bg-gray-50 p-2 rounded-xl border border-gray-100"><p class="text-[10px] text-gray-400 font-bold">จำนวน 2 ถุง</p></div>
+                        <div class="bg-gray-50 p-2 rounded-xl border border-gray-100"><p class="huge-number price-val">0</p></div>
+                        <div class="bg-pink-50 p-2 rounded-xl border border-pink-100 text-pink-700"><p class="huge-number-pink net-val">0</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-8 bg-gray-50 p-5 rounded-2xl border-2 border-yellow-400 shadow-inner">
+                <div>
+                    <p class="text-xs font-black text-gray-400 uppercase tracking-widest">หจก. พีเอ็น อะโกร เทรด</p>
+                    <h3 class="text-xl font-black text-gray-800 uppercase italic">UNITED FEED PROGRAM</h3>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs font-bold text-gray-400 uppercase">ต้นทุนรวมสุทธิ / ตัว</p>
+                    <h3 class="text-4xl font-black text-green-700" id="grand-total">฿0</h3>
+                </div>
+            </div>
+            <p class="text-center text-[10px] text-gray-400 mt-4 italic">*ราคาอาจมีการเปลี่ยนแปลงตามเงื่อนไขบริษัท</p>
         </div>
     </div>
 
     <script>
-        // เปลี่ยนตรงนี้เป็น URL ที่ได้จาก Apps Script นะครับคุณฉัตร
-        const APPS_SCRIPT_URL = 'URL_เว็บแอป_ของคุณ'; 
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOz2mDLKhBRGJGmT17zqLsuPBJIr3sLZEAUaXPQRdBxhgw1RXJ5KOwGQONh9YccgDx8GkDnBm9WusP/pub?output=csv';
+        const PROXY_URL = 'https://api.allorigins.win/get?url=' + encodeURIComponent(CSV_URL);
 
-        async function loadData() {
+        async function fetchPrices() {
+            const status = document.getElementById('status-display');
             try {
-                const response = await fetch(APPS_SCRIPT_URL);
-                const rows = await response.json();
+                const response = await fetch(PROXY_URL + '&t=' + new Date().getTime());
+                const json = await response.json();
+                const data = json.contents;
                 
-                let html = "";
-                // วนลูปเช็คข้อมูล (แถวแรกเป็นหัวตาราง ให้ข้ามไปเริ่ม i=1)
-                for (let i = 1; i < rows.length; i++) {
-                    if (rows[i][0]) { // ถ้ามีชื่อสินค้าใน Column A
-                        html += `<tr class="border-b border-pink-100 hover:bg-pink-50">
-                            <td class="p-4 font-bold text-gray-700">${rows[i][0]}</td>
-                            <td class="p-4 text-right text-pink-600 font-black">฿${Number(rows[i][4] || 0).toLocaleString()}</td>
-                        </tr>`;
+                // แยกแถวและล้างข้อมูล
+                const rows = data.split('\n').map(r => r.split(',').map(c => c.trim().replace(/^"|"$/g, '')));
+                
+                let grandTotal = 0;
+
+                document.querySelectorAll('.product-card').forEach(card => {
+                    const key = card.dataset.match;
+                    const useVal = parseFloat(card.dataset.use);
+                    
+                    // ค้นหาแถวใน Column A ที่มีคำว่า S80S, S20T, S21...
+                    const row = rows.find(r => r[0] && r[0].toUpperCase().includes(key.toUpperCase()));
+
+                    if (row) {
+                        // ราคาอยู่คอลัมน์ E (Index 4)
+                        const price = parseFloat(row[4]?.replace(/[^0-9.]/g, '')) || 0;
+                        const net = price * useVal;
+                        
+                        card.querySelector('.price-val').innerText = price.toLocaleString();
+                        card.querySelector('.net-val').innerText = net.toLocaleString();
+                        grandTotal += net;
                     }
+                });
+
+                document.getElementById('grand-total').innerText = '฿' + grandTotal.toLocaleString();
+                if(status) {
+                    status.innerText = "📡 ข้อมูลอัปเดตเรียบร้อย ✅";
+                    status.classList.replace('text-gray-400', 'text-green-600');
                 }
-                
-                document.getElementById('data-rows').innerHTML = html;
-                document.getElementById('loading-status').classList.add('hidden');
-                document.getElementById('price-table').classList.remove('hidden');
-                
             } catch (err) {
-                document.getElementById('loading-status').innerText = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ";
-                console.error(err);
+                if(status) {
+                    status.innerText = "❌ ดึงข้อมูลไม่สำเร็จ";
+                    status.classList.replace('text-gray-400', 'text-red-600');
+                }
             }
         }
-        loadData();
+        window.onload = fetchPrices;
     </script>
 </body>
 </html>
