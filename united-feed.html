@@ -89,116 +89,6 @@
     </style>
 </head>
 <body class="py-0 md:py-4">
-    <div class="no-print" style="padding: 25px; background: #ffffff; border-bottom: 4px solid #db2777; font-family: 'Prompt', sans-serif; max-width: 600px; margin: 0 auto; border-radius: 0 0 20px 20px; shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
-    <h2 style="color: #db2777; font-weight: bold; margin-bottom: 20px; border-left: 5px solid #db2777; padding-left: 10px;">✍️ กรอกข้อมูลรายรายการ</h2>
-    
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-        
-        <script>
-            function calc(id) {
-                const u = parseFloat(document.getElementById('in-u-' + id).value) || 0;
-                const p = parseFloat(document.getElementById('in-p-' + id).value) || 0;
-                const n = u * p;
-                
-                // อัปเดตช่องราคาสุทธิในแผงกรอก
-                document.getElementById('in-n-' + id).value = n.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
-                
-                // ส่งค่าไปแสดงในโบร์ชัวร์ (ต้องมี id="u-S80S", "p-S80S", "n-S80S" ฯลฯ ครอบตัวเลขเดิมไว้)
-                if(document.getElementById('u-' + id)) document.getElementById('u-' + id).innerText = u+" กระสอบ/ตัว";
-                if(document.getElementById('p-' + id)) document.getElementById('p-' + id).innerText = p.toLocaleString();
-                if(document.getElementById('n-' + id)) document.getElementById('n-' + id).innerText = n.toLocaleString();
-                
-                sumAll();
-            }
-
-            function sumAll() {
-                let totalNet = 0;
-                let totalBags = 0;
-                ['S80S', 'S20T', 'S21', 'S22', 'S23'].forEach(id => {
-                    const u = parseFloat(document.getElementById('in-u-' + id).value) || 0;
-                    const p = parseFloat(document.getElementById('in-p-' + id).value) || 0;
-                    totalNet += (u * p);
-                    totalBags += u;
-                });
-                if(document.getElementById('grand-total')) document.getElementById('grand-total').innerText = "฿" + totalNet.toLocaleString();
-                if(document.getElementById('total-bags')) document.getElementById('total-bags').innerText = totalBags + " กระสอบ";
-            }
-        </script>
-
-        <style>
-            .input-row { display: flex; align-items: center; justify-content: space-between; background: #fff5f7; padding: 12px 20px; border-radius: 12px; border: 1px solid #fce7f3; }
-            .input-group { display: flex; align-items: center; gap: 8px; }
-            input[type="number"] { border: 1px solid #ddd; border-radius: 6px; padding: 5px; text-align: center; font-family: 'Prompt'; }
-            input[type="text"] { border: none; background: transparent; font-weight: bold; color: #be185d; text-align: right; width: 80px; }
-        </style>
-
-        <div class="input-row">
-            <strong style="width: 60px; color: #9d174d;">S80S</strong>
-            <div class="input-group">
-                ใช้ <input type="number" id="in-u-S80S" value="0.5" step="0.5" oninput="calc('S80S')" style="width: 50px;">
-                x ถุงละ <input type="number" id="in-p-S80S" value="736" oninput="calc('S80S')" style="width: 80px;">
-            </div>
-            <div class="input-group">
-                <span>= ฿</span>
-                <input type="text" id="in-n-S80S" value="368" readonly>
-            </div>
-        </div>
-
-        <div class="input-row">
-            <strong style="width: 60px; color: #9d174d;">S20T</strong>
-            <div class="input-group">
-                ใช้ <input type="number" id="in-u-S20T" value="0.5" step="0.1" oninput="calc('S20T')" style="width: 50px;">
-                x ถุงละ <input type="number" id="in-p-S20T" value="620" oninput="calc('S20T')" style="width: 80px;">
-            </div>
-            <div class="input-group">
-                <span>= ฿</span>
-                <input type="text" id="in-n-S20T" value="310" readonly>
-            </div>
-        </div>
-
-        <div class="input-row">
-            <strong style="width: 60px; color: #9d174d;">S21</strong>
-            <div class="input-group">
-                ใช้ <input type="number" id="in-u-S21" value="2" step="0.1" oninput="calc('S21')" style="width: 50px;">
-                x ถุงละ <input type="number" id="in-p-S21" value="482" oninput="calc('S21')" style="width: 80px;">
-            </div>
-            <div class="input-group">
-                <span>= ฿</span>
-                <input type="text" id="in-n-S21" value="964" readonly>
-            </div>
-        </div>
-
-        <div class="input-row">
-            <strong style="width: 60px; color: #9d174d;">S22</strong>
-            <div class="input-group">
-                ใช้ <input type="number" id="in-u-S22" value="3" step="0.1" oninput="calc('S22')" style="width: 50px;">
-                x ถุงละ <input type="number" id="in-p-S22" value="452" oninput="calc('S22')" style="width: 80px;">
-            </div>
-            <div class="input-group">
-                <span>= ฿</span>
-                <input type="text" id="in-n-S22" value="1,356" readonly>
-            </div>
-        </div>
-
-        <div class="input-row">
-            <strong style="width: 60px; color: #9d174d;">S23</strong>
-            <div class="input-group">
-                ใช้ <input type="number" id="in-u-S23" value="1" step="0.1" oninput="calc('S23')" style="width: 50px;">
-                x ถุงละ <input type="number" id="in-p-S23" value="430" oninput="calc('S23')" style="width: 80px;">
-            </div>
-            <div class="input-group">
-                <span>= ฿</span>
-                <input type="text" id="in-n-S23" value="430" readonly>
-            </div>
-        </div>
-
-    </div>
-    
-    <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
-        <button onclick="window.print()" style="width: 100%; background: #be185d; color: white; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(190, 24, 93, 0.3);">🖨️ สั่งพิมพ์โบร์ชัวร์ (PDF)</button>
-        <span style="color: #999; font-size: 0.8rem;">* ข้อมูลในส่วนนี้จะไม่ปรากฏเมื่อสั่งพิมพ์</span>
-    </div>
-</div>
     <div class="a4-container shadow-2xl rounded-[1.5rem] overflow-hidden">
         
         <!-- Header Section -->
@@ -408,5 +298,115 @@
              พิมพ์โบร์ชัวร์ (1 หน้า A4)
         </button>
     </div>
+    <div class="no-print" style="padding: 25px; background: #ffffff; border-bottom: 4px solid #db2777; font-family: 'Prompt', sans-serif; max-width: 600px; margin: 0 auto; border-radius: 0 0 20px 20px; shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
+    <h2 style="color: #db2777; font-weight: bold; margin-bottom: 20px; border-left: 5px solid #db2777; padding-left: 10px;">✍️ กรอกข้อมูลรายรายการ</h2>
+    
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        
+        <script>
+            function calc(id) {
+                const u = parseFloat(document.getElementById('in-u-' + id).value) || 0;
+                const p = parseFloat(document.getElementById('in-p-' + id).value) || 0;
+                const n = u * p;
+                
+                // อัปเดตช่องราคาสุทธิในแผงกรอก
+                document.getElementById('in-n-' + id).value = n.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
+                
+                // ส่งค่าไปแสดงในโบร์ชัวร์ (ต้องมี id="u-S80S", "p-S80S", "n-S80S" ฯลฯ ครอบตัวเลขเดิมไว้)
+                if(document.getElementById('u-' + id)) document.getElementById('u-' + id).innerText = u+" กระสอบ/ตัว";
+                if(document.getElementById('p-' + id)) document.getElementById('p-' + id).innerText = p.toLocaleString();
+                if(document.getElementById('n-' + id)) document.getElementById('n-' + id).innerText = n.toLocaleString();
+                
+                sumAll();
+            }
+
+            function sumAll() {
+                let totalNet = 0;
+                let totalBags = 0;
+                ['S80S', 'S20T', 'S21', 'S22', 'S23'].forEach(id => {
+                    const u = parseFloat(document.getElementById('in-u-' + id).value) || 0;
+                    const p = parseFloat(document.getElementById('in-p-' + id).value) || 0;
+                    totalNet += (u * p);
+                    totalBags += u;
+                });
+                if(document.getElementById('grand-total')) document.getElementById('grand-total').innerText = "฿" + totalNet.toLocaleString();
+                if(document.getElementById('total-bags')) document.getElementById('total-bags').innerText = totalBags + " กระสอบ";
+            }
+        </script>
+
+        <style>
+            .input-row { display: flex; align-items: center; justify-content: space-between; background: #fff5f7; padding: 12px 20px; border-radius: 12px; border: 1px solid #fce7f3; }
+            .input-group { display: flex; align-items: center; gap: 8px; }
+            input[type="number"] { border: 1px solid #ddd; border-radius: 6px; padding: 5px; text-align: center; font-family: 'Prompt'; }
+            input[type="text"] { border: none; background: transparent; font-weight: bold; color: #be185d; text-align: right; width: 80px; }
+        </style>
+
+        <div class="input-row">
+            <strong style="width: 60px; color: #9d174d;">S80S</strong>
+            <div class="input-group">
+                ใช้ <input type="number" id="in-u-S80S" value="0.5" step="0.5" oninput="calc('S80S')" style="width: 50px;">
+                x ถุงละ <input type="number" id="in-p-S80S" value="736" oninput="calc('S80S')" style="width: 80px;">
+            </div>
+            <div class="input-group">
+                <span>= ฿</span>
+                <input type="text" id="in-n-S80S" value="368" readonly>
+            </div>
+        </div>
+
+        <div class="input-row">
+            <strong style="width: 60px; color: #9d174d;">S20T</strong>
+            <div class="input-group">
+                ใช้ <input type="number" id="in-u-S20T" value="0.5" step="0.1" oninput="calc('S20T')" style="width: 50px;">
+                x ถุงละ <input type="number" id="in-p-S20T" value="620" oninput="calc('S20T')" style="width: 80px;">
+            </div>
+            <div class="input-group">
+                <span>= ฿</span>
+                <input type="text" id="in-n-S20T" value="310" readonly>
+            </div>
+        </div>
+
+        <div class="input-row">
+            <strong style="width: 60px; color: #9d174d;">S21</strong>
+            <div class="input-group">
+                ใช้ <input type="number" id="in-u-S21" value="2" step="0.1" oninput="calc('S21')" style="width: 50px;">
+                x ถุงละ <input type="number" id="in-p-S21" value="482" oninput="calc('S21')" style="width: 80px;">
+            </div>
+            <div class="input-group">
+                <span>= ฿</span>
+                <input type="text" id="in-n-S21" value="964" readonly>
+            </div>
+        </div>
+
+        <div class="input-row">
+            <strong style="width: 60px; color: #9d174d;">S22</strong>
+            <div class="input-group">
+                ใช้ <input type="number" id="in-u-S22" value="3" step="0.1" oninput="calc('S22')" style="width: 50px;">
+                x ถุงละ <input type="number" id="in-p-S22" value="452" oninput="calc('S22')" style="width: 80px;">
+            </div>
+            <div class="input-group">
+                <span>= ฿</span>
+                <input type="text" id="in-n-S22" value="1,356" readonly>
+            </div>
+        </div>
+
+        <div class="input-row">
+            <strong style="width: 60px; color: #9d174d;">S23</strong>
+            <div class="input-group">
+                ใช้ <input type="number" id="in-u-S23" value="1" step="0.1" oninput="calc('S23')" style="width: 50px;">
+                x ถุงละ <input type="number" id="in-p-S23" value="430" oninput="calc('S23')" style="width: 80px;">
+            </div>
+            <div class="input-group">
+                <span>= ฿</span>
+                <input type="text" id="in-n-S23" value="430" readonly>
+            </div>
+        </div>
+
+    </div>
+    
+    <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+        <button onclick="window.print()" style="width: 100%; background: #be185d; color: white; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(190, 24, 93, 0.3);">🖨️ สั่งพิมพ์โบร์ชัวร์ (PDF)</button>
+        <span style="color: #999; font-size: 0.8rem;">* ข้อมูลในส่วนนี้จะไม่ปรากฏเมื่อสั่งพิมพ์</span>
+    </div>
+</div>
 </body>
 </html>
